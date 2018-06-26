@@ -2,7 +2,7 @@
 
 module.exports = app =>{
 
-    const controller = require('../controllers/beacons.controller');
+    const controller = require('../controllers/beacon.controller');
 
     app.route('/v1/beacons')
         .get(controller.listar)

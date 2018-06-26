@@ -47,41 +47,77 @@ exports.lista_por_id = (request, response) => {
 /* POST */
 
 exports.criar_item = (request, response) => {
-    let jsonObject = JSON.parse(creatPost(request.body, request.file.path));
-    item.create(jsonObject)
-        .then(data => {
-            response.status(201).send({
-                status: 'sucesso',
-                message: 'sucesso ao cadastrar o item',
-                records: data
-            })
-        }).catch(error => {
-            response.status(404).send({
-                status: 'sucesso',
-                message: 'error ao cadastrar o item',
-                stack: error
+    if (request.file) {
+        let jsonObject = JSON.parse(creatPost(request.body, request.file.path));
+        item.create(jsonObject)
+            .then(data => {
+                response.status(201).send({
+                    status: 'sucesso',
+                    message: 'sucesso ao cadastrar o item',
+                    records: data
+                })
+            }).catch(error => {
+                response.status(404).send({
+                    status: 'sucesso',
+                    message: 'error ao cadastrar o item',
+                    stack: error
+                });
             });
-        });
+    } else {
+        let jsonObject = JSON.parse(creatPostWithoutFile(request.body));
+        item.create(jsonObject)
+            .then(data => {
+                response.status(201).send({
+                    status: 'sucesso',
+                    message: 'sucesso ao cadastrar o item',
+                    records: data
+                })
+            }).catch(error => {
+                response.status(404).send({
+                    status: 'sucesso',
+                    message: 'error ao cadastrar o item',
+                    stack: error
+                });
+            });
+    }
 };
 
 /* PUT */
 
 exports.alterar_item = (request, response) => {
-    let jsonObject = JSON.parse(creatPost(request.body, request.file.path));
-    item.findByIdAndUpdate(request.params.id, jsonObject)
-        .then(data => {
-            response.status(201).send({
-                status: 'sucesso',
-                message: 'sucesso ao alterar o item',
-                records: data
-            })
-        }).catch(error => {
-            response.status(404).send({
-                status: 'sucesso',
-                message: 'error ao alterar o item',
-                stack: error
+    if (request.file) {
+        let jsonObject = JSON.parse(creatPost(request.body, request.file.path));
+        item.findByIdAndUpdate(request.params.id, jsonObject)
+            .then(data => {
+                response.status(201).send({
+                    status: 'sucesso',
+                    message: 'sucesso ao alterar o item',
+                    records: data
+                })
+            }).catch(error => {
+                response.status(404).send({
+                    status: 'sucesso',
+                    message: 'error ao alterar o item',
+                    stack: error
+                });
             });
-        });
+    } else {
+        let jsonObject = JSON.parse(creatPostWithoutFile(request.body));
+        item.findByIdAndUpdate(request.params.id, jsonObject)
+            .then(data => {
+                response.status(201).send({
+                    status: 'sucesso',
+                    message: 'sucesso ao alterar o item',
+                    records: data
+                })
+            }).catch(error => {
+                response.status(404).send({
+                    status: 'sucesso',
+                    message: 'error ao alterar o item',
+                    stack: error
+                });
+            });
+    }
 };
 
 /* DELETE */
@@ -105,24 +141,29 @@ exports.remover_item = (request, response) => {
 
 function creatPost(params, path) {
     let content;
-    if (path !== undefined) {
-        content = JSON.stringify({
-            nome: params.nome,
-            dataCriacao: params.dataCriacao,
-            descricao: params.descricao,
-            dataAquisicao: params.dataAquisicao,
-            artista: params.artista,
-            imgUrl: removeRootPath(path)
-        });
-    } else {
-        content = JSON.stringify({
-            nome: params.nome,
-            dataCriacao: params.dataCriacao,
-            descricao: params.descricao,
-            dataAquisicao: params.dataAquisicao,
-            artista: params.artista
-        });
-    }
+
+    content = JSON.stringify({
+        nome: params.nome,
+        dataCriacao: params.dataCriacao,
+        descricao: params.descricao,
+        dataAquisicao: params.dataAquisicao,
+        artista: params.artista,
+        imgUrl: removeRootPath(path)
+    });
+
+    return content;
+}
+
+function creatPostWithoutFile(params) {
+    let content;
+    content = JSON.stringify({
+        nome: params.nome,
+        dataCriacao: params.dataCriacao,
+        descricao: params.descricao,
+        dataAquisicao: params.dataAquisicao,
+        artista: params.artista
+    });
+
     return content;
 }
 

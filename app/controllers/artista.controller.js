@@ -47,41 +47,77 @@ exports.lista_por_id = (request, response) => {
 /* POST */
 
 exports.criar_artista = (request, response) => {
-    let jsonObject = JSON.parse(creatPost(request.body, request.file.path));
-    artista.create(jsonObject)
-        .then(data => {
-            response.status(201).send({
-                status: 'sucesso',
-                message: 'sucesso ao cadastrar o artista',
-                records: data
-            })
-        }).catch(error => {
-            response.status(404).send({
-                status: 'sucesso',
-                message: 'error ao cadastrar o artista',
-                stack: error
+    if (request.file) {
+        let jsonObject = JSON.parse(creatPost(request.body, request.file.path));
+        artista.create(jsonObject)
+            .then(data => {
+                response.status(201).send({
+                    status: 'sucesso',
+                    message: 'sucesso ao cadastrar o artista',
+                    records: data
+                })
+            }).catch(error => {
+                response.status(404).send({
+                    status: 'sucesso',
+                    message: 'error ao cadastrar o artista',
+                    stack: error
+                });
             });
-        });
+    } else {
+        let jsonObject = JSON.parse(creatPostWithoutFile(request.body));
+        artista.create(jsonObject)
+            .then(data => {
+                response.status(201).send({
+                    status: 'sucesso',
+                    message: 'sucesso ao cadastrar o artista',
+                    records: data
+                })
+            }).catch(error => {
+                response.status(404).send({
+                    status: 'sucesso',
+                    message: 'error ao cadastrar o artista',
+                    stack: error
+                });
+            });
+    }
 };
 
 /* PUT */
 
 exports.alterar_artista = (request, response) => {
-    let jsonObject = JSON.parse(creatPost(request.body, request.file.path));
-    artista.findByIdAndUpdate(request.params.id, jsonObject)
-        .then(data => {
-            response.status(201).send({
-                status: 'sucesso',
-                message: 'sucesso ao alterar o artista',
-                records: data
-            })
-        }).catch(error => {
-            response.status(404).send({
-                status: 'sucesso',
-                message: 'error ao alterar o artista',
-                stack: error
+    if (request.file) {
+        let jsonObject = JSON.parse(creatPost(request.body, request.file.path));
+        artista.findByIdAndUpdate(request.params.id, jsonObject)
+            .then(data => {
+                response.status(201).send({
+                    status: 'sucesso',
+                    message: 'sucesso ao alterar o artista',
+                    records: data
+                })
+            }).catch(error => {
+                response.status(404).send({
+                    status: 'sucesso',
+                    message: 'error ao alterar o artista',
+                    stack: error
+                });
             });
-        });
+    } else {
+        let jsonObject = JSON.parse(creatPostWithoutFile(request.body));
+        artista.findByIdAndUpdate(request.params.id, jsonObject)
+            .then(data => {
+                response.status(201).send({
+                    status: 'sucesso',
+                    message: 'sucesso ao alterar o artista',
+                    records: data
+                })
+            }).catch(error => {
+                response.status(404).send({
+                    status: 'sucesso',
+                    message: 'error ao alterar o artista',
+                    stack: error
+                });
+            });
+    }
 };
 
 /* DELETE */
@@ -105,22 +141,28 @@ exports.remover_artista = (request, response) => {
 
 function creatPost(params, path) {
     let content;
-    if (path !== undefined) {
-        content = JSON.stringify({
-            nome: params.nome,
-            dataNascimento: params.dataNascimento,
-            localNascimento: params.localNascimento,
-            dataMorte: params.dataMorte,
-            imgUrl: removeRootPath(path)
-        });
-    } else {
-        content = JSON.stringify({
-            nome: params.nome,
-            dataNascimento: params.dataNascimento,
-            localNascimento: params.localNascimento,
-            dataMorte: params.dataMorte
-        });
-    }
+
+    content = JSON.stringify({
+        nome: params.nome,
+        dataNascimento: params.dataNascimento,
+        localNascimento: params.localNascimento,
+        dataMorte: params.dataMorte,
+        imgUrl: removeRootPath(path)
+    });
+
+    return content;
+}
+
+function creatPostWithoutFile(params) {
+    let content;
+
+    content = JSON.stringify({
+        nome: params.nome,
+        dataNascimento: params.dataNascimento,
+        localNascimento: params.localNascimento,
+        dataMorte: params.dataMorte
+    });
+
     return content;
 }
 
