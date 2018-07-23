@@ -1,8 +1,6 @@
 'use strict'
 
 require('../config/database')('mongodb://localhost/museum');
-//require('../config/database')('mongodb://elissonsilva:elisson123@ds135912.mlab.com:35912/rhmobi');
-//require('../config/database')('mongodb://ec2-35-167-169-92.us-west-2.compute.amazonaws.com/rhmobi');
 
 const app = require('../config/express');
 const port = normalizePort(process.env.PORT || '3500');
